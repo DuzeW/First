@@ -9,7 +9,9 @@ int** nowy_sklad(int w , int k) {
         tab[i] = new int[k];
     }
     for(int i=0 ; i<=k ; i++){
-        tab[0][i]=0;
+        for(int j=0 ; j<w ; j++) {
+            tab[j][i] = 0;
+        }
     }
     return tab;
 }
@@ -85,23 +87,56 @@ int** wybor_postaci(int **tab) {
     }
     return tab;
 }
+void zapis(int **tab) {
+    cout <<"Trwa zapisywanie"<<endl;
+    ofstream zapis;
+    zapis.open("zapis.txt");
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 5; j++) {
+            zapis << tab[i][j] <<" ";
+        }
+        zapis << endl;
+    }
+    zapis.close();
+    cout <<"Zapis udany"<<endl;
+}
+int** wczytanie(int **tab){
+    cout << "Trwa wczytywanie zapisu..."<<endl;
+    ifstream zapis("zapis.txt");
+    if (!zapis.is_open()) {
+        cout << "Nie mozna otworzyc zapisu!" << endl;
+        exit(1);
+    }
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 5; j++) {
+            zapis >> tab[i][j];
+        }
+    }
 
+    zapis.close();
+    return tab;
+}
 int main() {
     char nowa_gra;
     int **sklad;
     while(nowa_gra!='T'||nowa_gra!='N') {
         cout << "Czy chcesz stworzyc nowa gre?" << endl << "T-Tak" << endl << "N-Nie" << endl;
         cin >> nowa_gra;
-        if(nowa_gra=='T'){
+        if(nowa_gra=='T'||nowa_gra=='t'){
             sklad=nowy_sklad(9,5);
             sklad=wybor_postaci(sklad);
+            zapis(sklad);
             break;
         }
         else{
-
+            sklad=nowy_sklad(9,5);
+            wczytanie(sklad);
+            for (int i = 0; i < 10; i++) {
+                for (int j = 0; j < 5; j++) {
+                    cout << sklad[i][j] << " ";
+                }
+                cout << endl;
+            }
         }
-    }
-    for(int i=0;i<9;i++) {
-        cout << sklad[i][0] << endl;
     }
 }
