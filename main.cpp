@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
-#include <cwchar>
+#include <string>
+#include <unistd.h>
 using namespace std;
 int** nowy_sklad(int w , int k) {
     int **tab;
@@ -25,11 +26,9 @@ int** wybor_postaci(int **tab) {
     cout << " ATK 5 ATK 8 ATK 5 ATK 12 ATK 10" << endl;
     cout << " DEF 4 DEF 7 DEF 6 DEF 3  DEF 10" << endl;
     cout << " HP 16 HP 10 HP 14 HP 10  HP 6  " << endl;
-    cout << "Gdzie chcesz ustawic swoja postac?" << endl;
     if (tab[0][0] == 0 && tab[0][1] == 0 && tab[0][2] == 0 && tab[0][3] == 0 && tab[0][4] == 0) {
         cout
-                << "Postacie mozesz ustawiac na pozycjach od 0 do 4 im wieksa lczba tym postac bedzie stac blizej prawej oraz przeciwnikow przez co bedzie otrzymywac wieksze obrazenia"
-                << endl;
+                << "Postacie mozesz ustawiac na pozycjach od 0 do 4"<< endl;
         while (pozycja > 4 || pozycja < 0) {
             cout << "Gdzie ustawiamy pierwsza postac?" << endl;
             cin >> pozycja;
@@ -112,31 +111,195 @@ int** wczytanie(int **tab){
             zapis >> tab[i][j];
         }
     }
-
+    cout << "Wczytano zapis"<<endl;
     zapis.close();
     return tab;
+}
+void pokaz_sklad(int **tab){
+    cout<<"Twoj zespol"<<endl;
+    cout<<"|   0   |   1   |   2   |   3   |   4   |"<<endl;
+    for (int i = 1; i < 10; i++) {
+        if(i==2){
+            i++;
+        }
+        if(i!=9) {
+            cout << "|";
+        }
+        for (int j = 0; j < 5; j++) {
+            if(tab[i][j]==0){
+                cout << "       ";
+            }
+            if(i==1){
+                if (tab[i][j]==1){
+                    cout << "  MED  ";
+                }
+                if (tab[i][j]==2){
+                    cout << " WSPAR ";
+                }
+                if (tab[i][j]==3){
+                    cout << "  DOW  ";
+                }
+                if (tab[i][j]==4){
+                    cout << " SNIPR ";
+                }
+                if (tab[i][j]==5){
+                    cout << " TECHN ";
+                }
+            }
+            if(tab[i][j]==-1){
+                cout << "   O   ";
+            }
+            if(tab[i][j]==-2){
+                cout << "  /|\\  ";
+            }
+            if(tab[i][j]==-3){
+                cout << "  / \\  ";
+            }
+            if(i==6){
+                if(tab[i][j]>0&&tab[i][j]<10){
+                    cout << "ATK   ";
+                }
+                if(tab[i][j]>=10&&tab[i][j]<100){
+                    cout << "ATK  ";
+                }
+                if(tab[i][j]>=100&&tab[i][j]<1000){
+                    cout << "ATK ";
+                }
+                if(tab[i][j]>=1000&&tab[i][j]<10000){
+                    cout << "ATK";
+                }
+                if(tab[i][j]!=0) {
+                    cout << tab[i][j];
+                }
+            }
+            if(i==7){
+                if(tab[i][j]>0&&tab[i][j]<10){
+                    cout << "DEF   ";
+                }
+                if(tab[i][j]>=10&&tab[i][j]<100){
+                    cout << "DEF  ";
+                }
+                if(tab[i][j]>=100&&tab[i][j]<1000){
+                    cout << "DEF ";
+                }
+                if(tab[i][j]>=1000&&tab[i][j]<10000){
+                    cout << "DEF";
+                }
+                if(tab[i][j]!=0) {
+                    cout << tab[i][j];
+                }
+            }
+            if(i==8){
+                if(tab[i][j]>0&&tab[i][j]<10){
+                    cout << "HP    ";
+                }
+                if(tab[i][j]>=10&&tab[i][j]<100){
+                    cout << "HP   ";
+                }
+                if(tab[i][j]>=100&&tab[i][j]<1000){
+                    cout << "HP  ";
+                }
+                if(tab[i][j]>=1000&&tab[i][j]<10000){
+                    cout << "HP ";
+                }
+                if(tab[i][j]!=0) {
+                    cout << tab[i][j];
+                }
+            }
+            cout << "|";
+        }
+        cout << endl;
+        if (i==8) {
+            break;
+        }
+    }
+}
+void zapis_imie() {
+    cout <<"Podaj swoje imie"<<endl;
+    string imie;
+    cin >> imie;
+    ofstream zapis("imie.txt");
+    zapis << imie;
+    zapis.close();
+}
+void powitanie(){
+    cout<<"Witaj ";
+    string imie;
+    ifstream zapis("imie.txt");
+    zapis >> imie;
+    cout<<imie<<" milo widziec ciebie znowu :-)"<<endl;
+}
+int** wybor_broni(int **tab){
+    pokaz_sklad(tab);
+    cout<<"1-Luneta ATK x3"<<endl;
+    cout<<"2-Zbroja DEF x3"<<endl;
+    cout<<"3-Apteczka HP x3"<<endl;
+    cout<<"4-Helm z noktowizorem DEF x2 , HP x2"<<endl;
+    cout<<"5-Kamizelka z pistoletem ATK x2 , DEF x2"<<endl;
+    cout<<"6-strzykawka z morfina ATK x2 , HP x2"<<endl;
+    int b=-1,p;
+    while(b>6||b<1){
+        cout << "Wybierz dodatkowe wyposarzenie od 1 do 6" << endl;
+        cin >> b;
+    }
+    cout << "Postaci na ktorej pozycji chcesz dac bron?" << endl;
+    cin >>p;
+    while(tab[0][p]!=1){
+        cout << "Postaci na ktorej pozycji chcesz dac bron?" << endl;
+        cin >>p;
+    }
+    if(b==1){
+        tab[6][p]=tab[6][p]*3;
+    }
+    if(b==2){
+        tab[7][p]=tab[7][p]*3;
+    }
+    if(b==3){
+        tab[8][p]=tab[8][p]*3;
+    }
+    if(b==4){
+        tab[7][p]=tab[7][p]*2;
+        tab[8][p]=tab[8][p]*2;
+    }
+    if(b==5){
+        tab[6][p]=tab[6][p]*2;
+        tab[7][p]=tab[7][p]*2;
+    }
+    if(b==6){
+        tab[6][p]=tab[6][p]*2;
+        tab[8][p]=tab[8][p]*2;
+    }
+    return tab;
+}
+void cls(){
+    for(int i=0; i<40; i++){
+        cout<<"\n";
+    }
 }
 int main() {
     char nowa_gra;
     int **sklad;
-    while(nowa_gra!='T'||nowa_gra!='N') {
+    while(nowa_gra!='T'&&nowa_gra!='N') {
         cout << "Czy chcesz stworzyc nowa gre?" << endl << "T-Tak" << endl << "N-Nie" << endl;
         cin >> nowa_gra;
         if(nowa_gra=='T'||nowa_gra=='t'){
+            zapis_imie();
+            cls();
             sklad=nowy_sklad(9,5);
             sklad=wybor_postaci(sklad);
+            sklad= wybor_broni(sklad);
             zapis(sklad);
             break;
         }
         else{
+            powitanie();
             sklad=nowy_sklad(9,5);
             wczytanie(sklad);
-            for (int i = 0; i < 10; i++) {
-                for (int j = 0; j < 5; j++) {
-                    cout << sklad[i][j] << " ";
-                }
-                cout << endl;
-            }
+            pokaz_sklad(sklad);
+            break;
         }
     }
+    cls();
+    pokaz_sklad(sklad);
+
 }
