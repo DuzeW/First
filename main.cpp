@@ -377,28 +377,54 @@ int** tura_gracza(int **skl,int **zom){
             break;
         }
         int zo=6;
-        while (zom[0][zo] != 1) {
+        while (zom[0][zo] != 1 &&(zom[0][0]==1||zom[0][1]==1||zom[0][2]==1||zom[0][3]==1||zom[0][4]==1)) {
             cout << "Ktorego zombi ma zatakowac postac na pozycji " << i << " ?" << endl;
             cin >> zo;
         }
-        if(zom[6][zo]>skl[6][i]){
+        if(zom[6][zo]>=skl[6][i]){
             zom[7][zo]--;
+            cout << "-1 HP Zombie " << zo <<endl;
         }
         else {
             zom[7][zo] = zom[7][zo] - skl[6][i] + zom[6][zo];
+            cout << (-skl[6][i] + zom[6][zo]) <<" HP Zombie " << zo <<endl;
         }
             if(zom[7][zo]<=0){
                 for(int d=0; d<8;d++){
                     zom[d][zo]=0;
                 }
+                cout << "Udalo ci sie zabic zombie " << zo << endl;
             }
-
     }
 
     return zom;
 }
 int** tura_zombie(int **skl, int **zom){
     cout << "Tura zombi"<<endl;
+    srand(time(NULL));
+    int a=rand()%5;
+    for(int i=0; i<=4;i++){
+        if (zom[0][i]==1){
+            while (skl[0][a]==0){
+                a=rand()%5;
+            }
+            if((-zom[5][i]+skl[7][a])<=0) {
+                skl[8][a] = (skl[8][a] - zom[5][i] + skl[7][a]);
+                cout << "Zombie " << i << " zatakowal postac " << a << "   " << (-zom[5][i] + skl[7][a]) << " HP"
+                     << endl;
+            }
+            else{
+                cout << "Zombie " << i << " zatakowal postac " << a << "   " << "0" << " HP"<<endl;
+            }
+            if(skl[8][a]<=0){
+                for (int j=0;j<=8;j++){
+                    skl[j][a]=0;
+                }
+                cout << "O nie postac "<<a<<" umarla";
+            }
+        }
+    }
+    return skl;
 }
 int** bitwa(int **tab,int b){
     string plik = to_string(b) + "b.txt";
@@ -434,9 +460,10 @@ int** bitwa(int **tab,int b){
         tura_gracza(tab,zom);
         wyswietl_zombie(zom);
         cout<<"\n\n\n\n";
+        tura_zombie(tab,zom);
         pokaz_sklad(tab);
 
-        tura_zombie(tab,zom);
+
 
     }
     cout << "Brawo "; imie(); cout<<" udalo ci sie wygrac bitwe" << endl;
@@ -465,10 +492,17 @@ int main() {
             break;
         }
     }
+
     cls();
     pokaz_sklad(sklad);
     cls();
     bitwa(sklad,1);
-
-
+    cls();
+    bitwa(sklad,2);
+    wybor_postaci(sklad);
+    wybor_broni(sklad);
+    wybor_broni(sklad);
+    cls();
+    bitwa(sklad,3);
+    cout<<"Udalo ci sie dojsc do bezpiecznej osady wygrywasz!!!";
 }
