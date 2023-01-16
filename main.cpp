@@ -165,7 +165,7 @@ void pokaz_sklad(int **tab){
                 if(tab[i][j]>=100&&tab[i][j]<1000){
                     cout << "ATK ";
                 }
-                if(tab[i][j]>=1000&&tab[i][j]<10000){
+                if(tab[i][j]>=1000){
                     cout << "ATK";
                 }
                 if(tab[i][j]!=0) {
@@ -182,7 +182,7 @@ void pokaz_sklad(int **tab){
                 if(tab[i][j]>=100&&tab[i][j]<1000){
                     cout << "DEF ";
                 }
-                if(tab[i][j]>=1000&&tab[i][j]<10000){
+                if(tab[i][j]>=1000){
                     cout << "DEF";
                 }
                 if(tab[i][j]!=0) {
@@ -199,7 +199,7 @@ void pokaz_sklad(int **tab){
                 if(tab[i][j]>=100&&tab[i][j]<1000){
                     cout << "HP  ";
                 }
-                if(tab[i][j]>=1000&&tab[i][j]<10000){
+                if(tab[i][j]>=1000){
                     cout << "HP ";
                 }
                 if(tab[i][j]!=0) {
@@ -222,12 +222,12 @@ void zapis_imie() {
     zapis << imie;
     zapis.close();
 }
-void powitanie(){
-    cout<<"Witaj ";
+void imie(){
     string imie;
     ifstream zapis("imie.txt");
     zapis >> imie;
-    cout<<imie<<" milo widziec ciebie znowu :-)"<<endl;
+    cout << imie;
+    zapis.close();
 }
 int** wybor_broni(int **tab){
     pokaz_sklad(tab);
@@ -276,6 +276,172 @@ void cls(){
         cout<<"\n";
     }
 }
+void wyswietl_zombie(int **tab){
+    cout<<"Przeciwnicy"<<endl;
+    cout<<"|   0   |   1   |   2   |   3   |   4   |"<<endl;
+    int k=5 , w=8;
+
+    for (int i = 1; i < w; i++) {
+        cout<<"|";
+        for (int j = 0; j < k; j++) {
+            if(tab[i][j]==0){
+                cout<<"       ";
+            }
+            else{
+                if(i==1){
+                    if(tab[i][j]==1){
+                        cout<<" ZOMBI ";
+                    }
+                }
+                if(i==2){
+                    if(tab[i][j]==1){
+                        cout<<"   U_  ";
+                    }
+                }
+                if(i==3){
+                    if(tab[i][j]==1){
+                        cout<<"  /|   ";
+                    }
+                }
+                if(i==4){
+                    if(tab[i][j]==1){
+                        cout<<"  / \\  ";
+                    }
+                }
+                if(i==5){
+                    if(tab[i][j]>0){
+                        if(tab[i][j]>0&&tab[i][j]<10){
+                            cout << "ATK   ";
+                        }
+                        if(tab[i][j]>=10&&tab[i][j]<100){
+                            cout << "ATK  ";
+                        }
+                        if(tab[i][j]>=100&&tab[i][j]<1000){
+                            cout << "ATK ";
+                        }
+                        if(tab[i][j]>=1000){
+                            cout << "ATK";
+                        }
+                        if(tab[i][j]!=0) {
+                            cout << tab[i][j];
+                        }
+                    }
+                }
+                if(i==6){
+                    if(tab[i][j]>0&&tab[i][j]<10){
+                        cout << "DEF   ";
+                    }
+                    if(tab[i][j]>=10&&tab[i][j]<100){
+                        cout << "DEF  ";
+                    }
+                    if(tab[i][j]>=100&&tab[i][j]<1000){
+                        cout << "DEF ";
+                    }
+                    if(tab[i][j]>=1000){
+                        cout << "DEF";
+                    }
+                    if(tab[i][j]!=0) {
+                        cout << tab[i][j];
+                    }
+                }
+                if(i==7){
+                    if(tab[i][j]>0&&tab[i][j]<10){
+                        cout << "HP    ";
+                    }
+                    if(tab[i][j]>=10&&tab[i][j]<100){
+                        cout << "HP   ";
+                    }
+                    if(tab[i][j]>=100&&tab[i][j]<1000){
+                        cout << "HP  ";
+                    }
+                    if(tab[i][j]>=1000){
+                        cout << "HP ";
+                    }
+                    if(tab[i][j]!=0) {
+                        cout << tab[i][j];
+                    }
+                }
+
+            }
+            cout<<"|";
+        }
+        cout<<endl;
+    }
+}
+int** tura_gracza(int **skl,int **zom){
+    for(int i=0;i<5;i++) {
+        while (skl[0][i]==0&&i<5) {
+            i++;
+        }
+        if(i==5){
+            break;
+        }
+        int zo=6;
+        while (zom[0][zo] != 1) {
+            cout << "Ktorego zombi ma zatakowac postac na pozycji " << i << " ?" << endl;
+            cin >> zo;
+        }
+        if(zom[6][zo]>skl[6][i]){
+            zom[7][zo]--;
+        }
+        else {
+            zom[7][zo] = zom[7][zo] - skl[6][i] + zom[6][zo];
+        }
+            if(zom[7][zo]<=0){
+                for(int d=0; d<8;d++){
+                    zom[d][zo]=0;
+                }
+            }
+
+    }
+
+    return zom;
+}
+int** tura_zombie(int **skl, int **zom){
+    cout << "Tura zombi"<<endl;
+}
+int** bitwa(int **tab,int b){
+    string plik = to_string(b) + "b.txt";
+    ifstream sklad_zombie(plik);
+    if(!sklad_zombie.is_open()){
+        cout << "Blad wczytania bitwy"<<endl;
+        return tab;
+    }
+    else{
+        cout << "Bitwa sie rozpoczyna"<<endl;
+    }
+    int w=8, k=5;
+    int **zom;
+    zom = new int *[w];
+    for (int i = 0; i != w; i++) {
+        zom[i] = new int[k];
+    }
+    for(int i=0 ; i<=k ; i++){
+        for(int j=0 ; j<w ; j++) {
+            zom[j][i] = 0;
+        }
+    }
+    for (int i = 0; i < w; i++) {
+        for (int j = 0; j < k; j++) {
+            sklad_zombie >> zom[i][j];
+        }
+    }
+    sklad_zombie.close();
+    wyswietl_zombie(zom);
+    cout<<"\n\n\n\n";
+    pokaz_sklad(tab);
+    while (zom[0][0]==1||zom[0][1]==1||zom[0][2]==1||zom[0][3]==1||zom[0][4]==1){
+        tura_gracza(tab,zom);
+        wyswietl_zombie(zom);
+        cout<<"\n\n\n\n";
+        pokaz_sklad(tab);
+
+        tura_zombie(tab,zom);
+
+    }
+    cout << "Brawo "; imie(); cout<<" udalo ci sie wygrac bitwe" << endl;
+    return tab;
+}
 int main() {
     char nowa_gra;
     int **sklad;
@@ -292,7 +458,7 @@ int main() {
             break;
         }
         else{
-            powitanie();
+            cout<< "Witaj "; imie(); cout<< " milo ciebie widziec :-)"<<endl;
             sklad=nowy_sklad(9,5);
             wczytanie(sklad);
             pokaz_sklad(sklad);
@@ -301,5 +467,8 @@ int main() {
     }
     cls();
     pokaz_sklad(sklad);
+    cls();
+    bitwa(sklad,1);
+
 
 }
